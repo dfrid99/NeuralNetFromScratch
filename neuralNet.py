@@ -33,6 +33,7 @@ for index, val in np.ndenumerate(weights1):
 
 #print(weights1.shape[0])
 
+
 def feedforward(prev_layer, weights, bias):
     nextLay = np.zeros(weights1.shape[0])
     for index,vec in enumerate(weights):
@@ -41,11 +42,21 @@ def feedforward(prev_layer, weights, bias):
         nextLay[index] = actSum
     return nextLay
 
-def calcDelta(layer, nextLay, outputLay = False):
-    if(outputLay):
+def calcDelta(layer, nextLay, weights = None):
+    if(weights is None):
+     for index,val in enumerate(layer):
+      layer[index] = val * (1-val) * (val - nextLay[index])
+    else:
         for index,val in enumerate(layer):
-            layer[index] = val * (1-val) * (val - nextLay[index])
+            transWeights = weights.transpose()
+            dotProd = np.dot(transWeights[index],nextLay)
+            layer[index] = sigmoid(val, deriv=True)*dotProd
 
+
+a = np.array([[1, 2], [3, 4]])
+b = a.transpose()
+print(a)
+print(b[0])
 
 
 
@@ -53,5 +64,5 @@ bias = -5
 a = feedforward(input_layer,weights1,bias)
 print(a)
 print(output_layer)
-b = calcDelta(a, output_layer, outputLay=True)
+b = calcDelta(a, output_layer)
 print(a)
