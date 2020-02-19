@@ -1,68 +1,14 @@
-import numpy as np
-import math
-import random
+from layer import *
 
+inp = np.array([1,2,3,4])
+targ = np.array([0,1])
+n = Layer(4)
+n.addLayer(5, "relu")
+n.addLayer(2)
+n.feedForward(inp)
+print(n.vals)
+a = n.nextLay
+while a is not None:
+    print(a.vals)
+    a = a.nextLay
 
-def sigmoid(x, deriv=False):
-    if (not deriv):
-        return 1 / (1 + math.exp(-x))
-    else:
-        return sigmoid(x) * (1.0 - sigmoid(x))
-
-        # print(sigmoid(-55))
-
-def leakyRelu(x, deriv = False):
-    if x > 0:
-        if(not deriv):
-            return x
-        else:
-            return 1
-    else:
-        if (not deriv):
-            return x * 0.01
-        else:
-            return 0.01
-
-
-input_layer = np.array([2,1,1,1])
-output_layer = np.array([0,1])
-
-weights1 = np.zeros((2,4))
-for index, val in np.ndenumerate(weights1):
-    weights1[index] = random.uniform(-5,5)
-
-#print(weights1.shape[0])
-
-
-def feedforward(prev_layer, weights, bias):
-    nextLay = np.zeros(weights1.shape[0])
-    for index,vec in enumerate(weights):
-        weightSum = np.dot(prev_layer,vec) + bias
-        actSum = sigmoid(weightSum)
-        nextLay[index] = actSum
-    return nextLay
-
-def calcDelta(layer, nextLay, weights = None):
-    if(weights is None):
-     for index,val in enumerate(layer):
-      layer[index] = val * (1-val) * (val - nextLay[index])
-    else:
-        for index,val in enumerate(layer):
-            transWeights = weights.transpose()
-            dotProd = np.dot(transWeights[index],nextLay)
-            layer[index] = sigmoid(val, deriv=True)*dotProd
-
-
-a = np.array([[1, 2], [3, 4]])
-b = a.transpose()
-print(a)
-print(b[0])
-
-
-
-bias = -5
-a = feedforward(input_layer,weights1,bias)
-print(a)
-print(output_layer)
-b = calcDelta(a, output_layer)
-print(a)
